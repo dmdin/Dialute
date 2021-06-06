@@ -1,3 +1,5 @@
+/* tslint:disable:max-classes-per-file */
+
 import chalk from 'chalk';
 import { SberRequest, SberResponse } from './api';
 
@@ -22,13 +24,13 @@ export class DialogManger {
     if (!this.sessions.hasOwnProperty(request.userId)) {
       this.sessions[request.userId] = new Session(this.start, request);
     }
-    let session = this.sessions[request.userId];
+    const session = this.sessions[request.userId];
     // TODO Проверить является ли ссылкой
     session.request.clone(request);
 
     let rsp;
-    let fromScript = session.step();
-    if (typeof fromScript == 'string') {
+    const fromScript = session.step();
+    if (typeof fromScript === 'string') {
       rsp = request.buildRsp();
       rsp.msg = fromScript;
     } else {
@@ -38,12 +40,12 @@ export class DialogManger {
   }
 
   deleteSessions() {
-    let len = Object.keys(this.sessions || {}).length;
+    const len = Object.keys(this.sessions || {}).length;
     console.info(chalk.magentaBright(`Total sessions: ${len}`));
     console.info(chalk.magentaBright('Deleting unused sessions'));
     let counter = 0;
-    for (let i in this.sessions) {
-      let s = this.sessions[i];
+    for (const i of this.sessions) {
+      const s = this.sessions[i];
       if (Date.now() - s > this.deleteSessionAfter) {
         this.sessions[i] = undefined;
         counter++;
@@ -68,7 +70,7 @@ export class Session {
 
   step(): any {
     this.lastActive = Date.now();
-    let { value, done } = this.script.next();
+    const { value, done } = this.script.next();
     if (done) {
       console.warn('Script ended. Reloading');
       this.script = this.start(this.request);

@@ -1,3 +1,4 @@
+/* tslint:disable:max-classes-per-file */
 export class SberRequest {
   type: string;
   body: any;
@@ -15,31 +16,31 @@ export class SberRequest {
     return this.body.payload;
   }
 
-  get msg() {
+  get msg(): string {
     return this.pld.message.original_text;
   }
 
-  get act() {
+  get act(): object {
     return this.pld.server_action;
   }
 
-  get character() {
+  get character(): object {
     return this.pld.character;
   }
 
-  get charGender() {
+  get charGender(): string {
     return this.pld.character.gender;
   }
 
-  get charName() {
+  get charName(): string {
     return this.pld.character.name;
   }
 
-  get device() {
+  get device(): object {
     return this.pld.device;
   }
 
-  get userId() {
+  get userId(): string {
     return this.body.sessionId;
   }
 
@@ -49,7 +50,7 @@ export class SberRequest {
   }
 
   buildRsp() {
-    let starter = {
+    const starter = {
       ...this.body,
       payload: { device: this.device },
     };
@@ -68,16 +69,14 @@ export class SberResponse {
   }
 
   set msg(text: string) {
-    console.log(this.pld.items);
-    this.pld.items = (this.pld.items || []).filter((obj: any) => !obj.bubble);
-    console.log(this.pld.items);
+    this.pld.items = (this.pld.items || []).filter((v: any) => !v.bubble);
     this.pld.items.push({ bubble: { text } });
     this.pld.pronounceText = text;
   }
 
-  set data(obj: any) {
+  set data(value: any) {
     this.pld.items = (this.pld.items || []).filter((obj: any) => !obj.command);
-    this.pld.items.push({ command: { type: 'smart_app_data', smart_app_data: obj } });
+    this.pld.items.push({ command: { type: 'smart_app_data', smart_app_data: value } });
   }
 }
 
@@ -96,18 +95,18 @@ class Token {
 }
 
 class NLU {
-  tokens: Array<Token>;
-  lemmas: Array<string>;
-  types: Array<string>;
-  parts: Array<string>;
-  texts: Array<string>;
+  tokens: Token[] = [];
+  lemmas: string[] = [];
+  types: string[] = [];
+  parts: string[] = [];
+  texts: string[] = [];
 
   constructor(elements: any) {
-    for (let element of elements) {
+    for (const element of elements) {
       if (!element.hasOwnProperty('grammem_info')) {
         continue;
       }
-      let token = new Token(element);
+      const token = new Token(element);
       this.tokens.push(token);
       this.lemmas.push(token.lemma);
       this.types.push(token.type);

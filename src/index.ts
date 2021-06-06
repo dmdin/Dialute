@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 app.post('/app-connector/', (request, response) => {
-  let body = dm.process(request.body);
+  const body = dm.process(request.body);
   response.send(body);
 });
 
