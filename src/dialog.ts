@@ -1,14 +1,14 @@
 /* tslint:disable:max-classes-per-file */
 
 import chalk from 'chalk';
-import { SberRequest, SberResponse } from './api';
+import {SberRequest, SberResponse} from './api';
 
 const Second = 1000;
 const Minute = Second * 60;
 
 export class DialogManger {
   start: any;
-  sessions: any = {};
+  sessions: any;
 
   // TODO: check if this works correctly
   deleteSessionAfter: number = Minute * 4;
@@ -16,7 +16,9 @@ export class DialogManger {
 
   constructor(start: any) {
     this.start = start;
-    setInterval(this.deleteSessions, this.deleteEachTime);
+    this.sessions = {};
+    // Important: setInterval changes context without wrapper function
+    setInterval(() => this.deleteSessions(), this.deleteEachTime);
   }
 
   process(request: any): SberResponse {
@@ -25,7 +27,6 @@ export class DialogManger {
       this.sessions[request.userId] = new Session(this.start, request);
     }
     const session = this.sessions[request.userId];
-    // TODO Проверить является ли ссылкой
     session.request.clone(request);
 
     let rsp;
@@ -40,14 +41,17 @@ export class DialogManger {
   }
 
   deleteSessions() {
-    const len = Object.keys(this.sessions || {}).length;
+    const len = Object.keys(this.sessions).length;
     console.info(chalk.magentaBright(`Total sessions: ${len}`));
     console.info(chalk.magentaBright('Deleting unused sessions'));
     let counter = 0;
-    for (const i of this.sessions) {
-      const s = this.sessions[i];
+
+    // @ts-ignore
+    for (const [key, value]: any of Object.entries(this.sessions)) {
+      // @ts-ignore
+      const s = value.lastActive;
       if (Date.now() - s > this.deleteSessionAfter) {
-        this.sessions[i] = undefined;
+        delete this.sessions[key];
         counter++;
       }
     }
@@ -70,7 +74,7 @@ export class Session {
 
   step(): any {
     this.lastActive = Date.now();
-    const { value, done } = this.script.next();
+    const {value, done} = this.script.next();
     if (done) {
       console.warn('Script ended. Reloading');
       this.script = this.start(this.request);

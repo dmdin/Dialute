@@ -1,9 +1,8 @@
 import chalk from 'chalk';
 import express from 'express';
-import { DialogManger } from './dialog';
-import { SberRequest } from './api';
+import { DialogManger } from 'dialute';
 
-function* script(r: SberRequest) {
+function* script(r) {
   while (true) {
     yield 'Hello world from Dialute!';
     yield r.msg;
@@ -12,7 +11,7 @@ function* script(r: SberRequest) {
 
 const dm = new DialogManger(script);
 const app = express();
-const port: number = 8000;
+const port = 8000;
 
 app.use((req, res, next) => {
   console.info(`${chalk.cyanBright(new Date().toUTCString())} - ${chalk.green(req.method)}:`, chalk.cyan(req.path));

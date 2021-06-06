@@ -1,0 +1,12 @@
+{
+  "name": "dialute_example",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "dialute": "^0.0.5",
+    "express": "^4.17.1"
+  }
+}
