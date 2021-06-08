@@ -1,15 +1,17 @@
 /* tslint:disable:max-classes-per-file */
 export class SberRequest {
-  type: string;
   body: any;
   nlu: NLU;
 
   constructor(request: any) {
     this.body = request;
-    this.type = request.messageName;
     if (this.type === 'MESSAGE_TO_SKILL') {
       this.nlu = new NLU(this.pld.message.tokenized_elements_list);
     }
+  }
+
+  get type() {
+    return this.body.messageName;
   }
 
   get pld() {
@@ -50,20 +52,21 @@ export class SberRequest {
   }
 
   buildRsp() {
-    const starter = {
-      ...this.body,
-      payload: { device: this.device },
-    };
-    return new SberResponse(starter);
+    return new SberResponse(this);
   }
 }
 
 export class SberResponse {
+  request: SberRequest;
   body: any;
   pld: any;
 
-  constructor(starter: any) {
-    this.body = starter;
+  constructor(request: SberRequest) {
+    this.request = request;
+    this.body = {
+      ...request.body,
+      payload: { device: request.device },
+    };
     this.body.messageName = 'ANSWER_TO_USER';
     this.pld = this.body.payload;
   }
@@ -74,9 +77,35 @@ export class SberResponse {
     this.pld.pronounceText = text;
   }
 
+  set msgJ(text: string) {
+    if (this.request.pld.character.id === 'joy') {
+      this.msg = text;
+    }
+  }
+
+  set msgS(text: string) {
+    if (this.request.pld.character.id === 'sber') {
+      this.msg = text;
+    }
+  }
+
+  set msgA(text: string) {
+    if (this.request.pld.character.id === 'athena') {
+      this.msg = text;
+    }
+  }
+
   set data(value: any) {
     this.pld.items = (this.pld.items || []).filter((obj: any) => !obj.command);
     this.pld.items.push({ command: { type: 'smart_app_data', smart_app_data: value } });
+  }
+
+  set end(value: boolean) {
+    this.pld.finished = value;
+  }
+
+  set listen(value: boolean) {
+    this.pld.auto_listening = value;
   }
 }
 

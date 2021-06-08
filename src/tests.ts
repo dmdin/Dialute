@@ -5,8 +5,11 @@ import { SberRequest } from './api';
 
 function* script(r: SberRequest) {
   while (true) {
-    yield 'Hello world from Dialute!';
-    yield r.msg;
+    const rsp = r.buildRsp();
+    console.log(r.type);
+    rsp.msg = 'Привет!';
+    rsp.msgJ = 'Привет!';
+    yield rsp;
   }
 }
 

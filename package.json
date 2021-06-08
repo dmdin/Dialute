@@ -1,6 +1,6 @@
 {
   "name": "dialute",
-  "version": "0.0.6",
+  "version": "0.0.11",
   "author": "Din Dmitriy <@Dikower>",
   "description": "A highly declarative framework for building SberSalute apps",
   "repository": {
@@ -17,10 +17,7 @@
     "start": "node .",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
-    "dev": "nodemon dist/tests.js",
-    "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "dev": "nodemon dist/tests.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

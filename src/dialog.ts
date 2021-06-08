@@ -1,7 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 
 import chalk from 'chalk';
-import {SberRequest, SberResponse} from './api';
+import { SberRequest, SberResponse } from './api';
 
 const Second = 1000;
 const Minute = Second * 60;
@@ -74,7 +74,7 @@ export class Session {
 
   step(): any {
     this.lastActive = Date.now();
-    const {value, done} = this.script.next();
+    const { value, done } = this.script.next();
     if (done) {
       console.warn('Script ended. Reloading');
       this.script = this.start(this.request);
