@@ -1,11 +1,10 @@
 import chalk from 'chalk';
 import express from 'express';
-import { DialogManger } from 'dialute';
+import {DialogManger} from 'dialute';
 
 function* script(r) {
   while (true) {
     yield 'Hello world from Dialute!';
-    yield r.msg;
   }
 }
 

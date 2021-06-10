@@ -104,6 +104,10 @@ export class SberResponse {
     this.pld.finished = value;
   }
 
+  get end(): boolean {
+    return this.pld.finished || false;
+  }
+
   set listen(value: boolean) {
     this.pld.auto_listening = value;
   }

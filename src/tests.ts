@@ -3,12 +3,11 @@ import express from 'express';
 import { DialogManger } from './dialog';
 import { SberRequest } from './api';
 
+
 function* script(r: SberRequest) {
   while (true) {
     const rsp = r.buildRsp();
-    console.log(r.type);
     rsp.msg = 'Привет!';
-    rsp.msgJ = 'Привет!';
     yield rsp;
   }
 }

@@ -37,6 +37,10 @@ export class DialogManger {
     } else {
       rsp = fromScript;
     }
+
+    if (rsp.end) {
+      delete this.sessions[request.userId];
+    }
     return rsp.body;
   }
 
