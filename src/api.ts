@@ -43,7 +43,8 @@ export class SberRequest {
   }
 
   get userId(): string {
-    return this.body.sessionId;
+    // return this.body.sessionId; Always changes on SberPortal for each message!
+    return this.body.uuid.sub;
   }
 
   clone(another: SberRequest): any {
@@ -147,4 +148,15 @@ class NLU {
       this.texts.push(token.text);
     }
   }
+  lemmaIntersection(lemmas: string[]){
+    const lemmasSet = new Set(this.lemmas);
+    let counter = 0;
+    for (const lemma of lemmas){
+      if (lemmasSet.has(lemma)){
+        counter++;
+      }
+    }
+    return counter;
+  }
+
 }

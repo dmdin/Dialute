@@ -1,14 +1,14 @@
 import chalk from 'chalk';
 import express from 'express';
-import { DialogManger } from './dialog';
-import { SberRequest } from './api';
+import {DialogManger} from './dialog';
+import {SberRequest} from './api';
 
 
 function* script(r: SberRequest) {
+  yield 'Привет'
   while (true) {
-    const rsp = r.buildRsp();
-    rsp.msg = 'Привет!';
-    yield rsp;
+    console.log(r.nlu.lemmas)
+    yield r.nlu.lemmaIntersection(['привет', 'салют', 'дело']).toString()
   }
 }
 
