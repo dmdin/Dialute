@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "dialute_example",
   "scripts": {
     "dev": "nodemon index.js"

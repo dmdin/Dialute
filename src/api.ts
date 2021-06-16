@@ -66,15 +66,16 @@ export class SberResponse {
     this.request = request;
     this.body = {
       ...request.body,
-      payload: { device: request.device },
+      payload: {device: request.device},
     };
     this.body.messageName = 'ANSWER_TO_USER';
     this.pld = this.body.payload;
+    this.pld.items = [];
   }
 
   set msg(text: string) {
-    this.pld.items = (this.pld.items || []).filter((v: any) => !v.bubble);
-    this.pld.items.push({ bubble: { text } });
+    this.pld.items = this.pld.items.filter((v: any) => !v.bubble);
+    this.pld.items.push({bubble: {text}});
     this.pld.pronounceText = text;
   }
 
@@ -97,8 +98,13 @@ export class SberResponse {
   }
 
   set data(value: any) {
-    this.pld.items = (this.pld.items || []).filter((obj: any) => !obj.command);
-    this.pld.items.push({ command: { type: 'smart_app_data', smart_app_data: value } });
+    this.pld.items = this.pld.items.filter((obj: any) => obj.command ? !obj.command.type.smart_app_data : true);
+    this.pld.items.push({command: {type: 'smart_app_data', smart_app_data: value}});
+  }
+
+  set act(value: any) {
+    this.pld.items = this.pld.items.filter((obj: any) => obj.command ? !obj.command.type.action : true);
+    this.pld.items.push({command: {type: 'action', action: value}})
   }
 
   set end(value: boolean) {
@@ -148,11 +154,12 @@ class NLU {
       this.texts.push(token.text);
     }
   }
-  lemmaIntersection(lemmas: string[]){
+
+  lemmaIntersection(lemmas: string[]) {
     const lemmasSet = new Set(this.lemmas);
     let counter = 0;
-    for (const lemma of lemmas){
-      if (lemmasSet.has(lemma)){
+    for (const lemma of lemmas) {
+      if (lemmasSet.has(lemma)) {
         counter++;
       }
     }
