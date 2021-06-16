@@ -1,14 +1,13 @@
 import chalk from 'chalk';
 import express from 'express';
-import {DialogManger} from './dialog';
-import {SberRequest} from './api';
-
+import { DialogManger } from './dialog';
+import { SberRequest } from './api';
 
 function* script(r: SberRequest) {
-  yield 'Привет'
+  yield 'Привет';
   while (true) {
-    console.log(r.nlu.lemmas)
-    yield r.nlu.lemmaIntersection(['привет', 'салют', 'дело']).toString()
+    console.log(r.nlu.lemmas);
+    yield r.nlu.lemmaIntersection(['привет', 'салют', 'дело']).toString();
   }
 }
 
