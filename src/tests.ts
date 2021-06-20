@@ -4,10 +4,13 @@ import { DialogManger } from './dialog';
 import { SberRequest } from './api';
 
 function* script(r: SberRequest) {
-  yield 'Привет';
+  const rsp = r.buildRsp();
   while (true) {
     console.log(r.nlu.lemmas);
-    yield r.nlu.lemmaIntersection(['привет', 'салют', 'дело']).toString();
+    rsp.msg = 'Hello!';
+    rsp.kbrd = ['1', '2', '3'];
+    // yield r.nlu.lemmaIntersection(['привет', 'салют', 'дело']).toString();
+    yield rsp;
   }
 }
 
