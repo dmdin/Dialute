@@ -98,12 +98,12 @@ export class SberResponse {
   }
 
   set data(value: any) {
-    this.pld.items = this.pld.items.filter((obj: any) => (obj.command ? !obj.command.type.smart_app_data : true));
+    this.pld.items = this.pld.items.filter((obj: any) => (obj.command ? obj.command.type.smart_app_data : true));
     this.pld.items.push({command: {type: 'smart_app_data', smart_app_data: value}});
   }
 
   set act(value: any) {
-    this.pld.items = this.pld.items.filter((obj: any) => (obj.command ? !obj.command.type.action : true));
+    this.pld.items = this.pld.items.filter((obj: any) => (obj.command ? obj.command.type.action : true));
     this.pld.items.push({command: {type: 'action', action: value}});
   }
 
