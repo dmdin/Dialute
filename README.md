@@ -61,6 +61,6 @@ Coming soon...
 
 ## 🥰 Support
 
-You can always click on the star of repo and donate. I will be very glad for any support
+You can always click on the ⭐️ of the repo and donate. I will be very glad for any support
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/Dikower)
