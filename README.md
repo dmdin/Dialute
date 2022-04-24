@@ -4,13 +4,13 @@ The way you will want to create Chat and Canvas Apps for SberSalute. Use the pow
 interface of the framework. Based
 on [SmartApp API](https://developer.sberdevices.ru/docs/ru/developer_tools/amp/smartappapi_description_and_guide)
 
-# ⚙️ Install
+## ⚙️ Install
 
 ```bash
 $: npm install dialute
 ```
 
-# 🚀 Use
+## 🚀 Startup
 
 * Initiate the ordinary *express* project
 * Write a generator with the single argument: __request__
@@ -55,6 +55,12 @@ $: npm install dialute
     $: ngrok http 8000
     ```
 
-# 📋 Docs
+## 📋 Docs
 
 Coming soon...
+
+## 🥰 Support
+
+You can always click on the ⭐️ of the repo and donate. I will be very glad for any support
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/Dikower)
