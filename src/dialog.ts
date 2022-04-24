@@ -6,6 +6,11 @@ import { SberRequest, SberResponse } from './api';
 const Second = 1000;
 const Minute = Second * 60;
 
+export function DateLog(msg: string) {
+  console.log(`${chalk.cyanBright(new Date().toUTCString())} - ${msg}`)
+  // console.log(`${chalk.cyanBright(new Date().toUTCString())} - ${msg}`)
+}
+
 export class DialogManger {
   start: any;
   sessions: any;
@@ -31,11 +36,22 @@ export class DialogManger {
 
     let rsp;
     const fromScript = session.step();
+
+    // while ['[object Generator]', '[object GeneratorFunction]'].includes(Object.toString.call(fromScript)) {
+    //
+    // }
+
     if (typeof fromScript === 'string') {
       rsp = request.buildRsp();
       rsp.msg = fromScript;
-    } else {
+    } else if (fromScript instanceof SberResponse) {
       rsp = fromScript;
+      // } else if (Object.toString.call(fromScript) === '[object Generator]'){
+      //   session.script =
+      //
+      // } else if (Object.toString.call(fromScript) === '[object GeneratorFunction]') {
+    } else {
+      DateLog(chalk.redBright('You have passed unsupported type from script generator'));
     }
 
     if (rsp.end) {
@@ -46,26 +62,25 @@ export class DialogManger {
 
   deleteSessions() {
     const len = Object.keys(this.sessions).length;
-    console.info(chalk.magentaBright(`Total sessions: ${len}`));
-    console.info(chalk.magentaBright('Deleting unused sessions'));
+    DateLog(chalk.magentaBright(`Total sessions: ${len}`));
+    DateLog(chalk.magentaBright('Deleting unused sessions'));
     let counter = 0;
 
-    // @ts-ignore
-    for (const [key, value]: any of Object.entries(this.sessions)) {
-      // @ts-ignore
-      const s = value.lastActive;
+    for (const [key, value] of Object.entries(this.sessions)) {
+      const s = (value as Session).lastActive;
       if (Date.now() - s > this.deleteSessionAfter) {
         delete this.sessions[key];
         counter++;
       }
     }
-    console.info(chalk.magentaBright(`Deleted ${counter} sessions`));
+    DateLog(chalk.magentaBright(`Deleted ${counter} sessions`));
   }
 }
 
 export class Session {
   start: any;
-  script: Generator<SberRequest, string | SberResponse>;
+  script: Generator<SberRequest, string | SberResponse | Function>;
+  // scriptStorage: {string: Function | Generator}
   request: SberRequest;
   lastActive: number;
 
@@ -73,6 +88,7 @@ export class Session {
     this.start = start;
     this.request = request;
     this.script = start(request);
+    // this.scriptStorage = {'/': start};
     this.lastActive = Date.now();
   }
 
@@ -80,7 +96,7 @@ export class Session {
     this.lastActive = Date.now();
     const { value, done } = this.script.next();
     if (done) {
-      console.warn('Script ended. Reloading');
+      DateLog(chalk.bgYellow('Script ended. Reloading'));
       this.script = this.start(this.request);
       return this.step();
     }
