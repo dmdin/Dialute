@@ -10,6 +10,7 @@
         "no-bitwise": true,
         "no-conditional-assignment": true,
         "no-consecutive-blank-lines": false,
+        "ban-types": false,
         "no-console": {
             "severity": "off",
             "options": ["debug", "info", "log", "time", "timeEnd", "trace"]

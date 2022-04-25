@@ -32,9 +32,10 @@ export class DialogManger {
   constructor(
     start: GeneratorFunction,
     optional = {
-      deleteSessionAfter: Minute * 4, deleteEachTime: Minute * 2
-    }) {
-
+      deleteSessionAfter: Minute * 4,
+      deleteEachTime: Minute * 2,
+    },
+  ) {
     this.start = start;
     this.sessions = {};
     this.deleteEachTime = optional.deleteEachTime;
@@ -54,11 +55,11 @@ export class DialogManger {
     }
 
     if (!this.sessions.hasOwnProperty(request.userId)) {
-      let session = new Session(this.start, request);
+      const newSession = new Session(this.start, request);
       for (const hook of this.hooks[Event.CreateSession]) {
-        await hook(session);
+        await hook(newSession);
       }
-      this.sessions[request.userId] = session;
+      this.sessions[request.userId] = newSession;
     }
     const session = this.sessions[request.userId];
     session.request.clone(request);

@@ -7,14 +7,7 @@ export class Dialute {
   app: express.Express;
   port: string;
 
-  constructor({
-    dm,
-    port = '8000',
-  }: {
-    dm: DialogManger;
-    port: string;
-  }) {
-
+  constructor({ dm, port = '8000' }: { dm: DialogManger; port: string }) {
     this.dm = dm;
     this.app = express();
     this.port = port;
@@ -31,9 +24,9 @@ export class Dialute {
   }
 
   static fromEntrypoint(entrypoint: GeneratorFunction): Dialute {
-    let dm = new DialogManger(entrypoint);
-    let port = '8000';
-    return new Dialute({dm, port});
+    const dm = new DialogManger(entrypoint);
+    const port = '8000';
+    return new Dialute({ dm, port });
   }
 
   start() {
