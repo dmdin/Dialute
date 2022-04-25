@@ -1,5 +1,5 @@
 import express = require('express');
-import { DateLog, DialogManger } from './dialog';
+import { dateLog, DialogManger } from './dialog';
 import chalk from 'chalk';
 
 export class Dialute {
@@ -20,12 +20,12 @@ export class Dialute {
     this.port = port;
 
     this.app.use((req, res, next) => {
-      DateLog(`${chalk.green(req.method)}: ${chalk.cyan(req.path)}`);
+      dateLog(`${chalk.green(req.method)}: ${chalk.cyan(req.path)}`);
       next();
     });
     this.app.use(express.json());
-    this.app.post('/app-connector/', (request, response) => {
-      const body = this.dm.process(request.body).body;
+    this.app.post('/app-connector/', async (request, response) => {
+      const body = (await this.dm.process(request.body)).body;
       response.send(body);
     });
   }
@@ -37,6 +37,6 @@ export class Dialute {
   }
 
   start() {
-    this.app.listen(this.port, () => DateLog(chalk.blue(`Start server on http://localhost:${this.port}/`)));
+    this.app.listen(this.port, () => dateLog(chalk.blue(`Start server on http://localhost:${this.port}/`)));
   }
 }

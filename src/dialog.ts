@@ -1,44 +1,66 @@
 /* tslint:disable:max-classes-per-file */
-
 import chalk from 'chalk';
 import { SberRequest, SberResponse } from './api';
-import { start } from "repl";
 
 const Second = 1000;
 const Minute = Second * 60;
 
-export type ScriptStep = string | SberResponse | Generator | GeneratorFunction
+export type ScriptStep = string | SberResponse | Generator | GeneratorFunction;
 
-export function DateLog(msg: string) {
-  console.log(`${chalk.cyanBright(new Date().toUTCString())} - ${msg}`)
-  // console.log(`${chalk.cyanBright(new Date().toUTCString())} - ${msg}`)
+export function dateLog(msg: string) {
+  console.log(`${chalk.cyanBright(new Date().toUTCString())} - ${msg}`);
+}
+
+type Callback = (s: Session) => Promise<any>;
+
+export enum Event {
+  CreateSession = 'CREATE_SESSION',
+  DeleteSession = 'DELETE_SESSION',
+}
+
+interface Hooks {
+  [event: string]: string;
 }
 
 export class DialogManger {
   start: any;
   sessions: any;
+  hooks: { [event in Event]: Callback[] };
+  deleteSessionAfter: number;
+  deleteEachTime: number;
 
-  // TODO: check if this works correctly
-  deleteSessionAfter: number = Minute * 4;
-  deleteEachTime: number = Minute * 2;
+  constructor(
+    start: GeneratorFunction,
+    optional = {
+      deleteSessionAfter: Minute * 4, deleteEachTime: Minute * 2
+    }) {
 
-  constructor(start: GeneratorFunction) {
     this.start = start;
     this.sessions = {};
+    this.deleteEachTime = optional.deleteEachTime;
+    this.deleteSessionAfter = optional.deleteSessionAfter;
+    this.hooks = {
+      CREATE_SESSION: [],
+      DELETE_SESSION: [],
+    };
+
     // Important: setInterval changes context without wrapper function
     setInterval(() => this.deleteSessions(), this.deleteEachTime);
   }
 
-  process(request: any): SberResponse {
+  async process(request: any): Promise<SberResponse> {
     if (!(request instanceof SberRequest)) {
       request = new SberRequest(request);
     }
 
     if (!this.sessions.hasOwnProperty(request.userId)) {
-      this.sessions[request.userId] = new Session(this.start, request);
+      let session = new Session(this.start, request);
+      for (const hook of this.hooks[Event.CreateSession]) {
+        await hook(session);
+      }
+      this.sessions[request.userId] = session;
     }
     const session = this.sessions[request.userId];
-    console.log(session.request)
     session.request.clone(request);
 
     let rsp: SberResponse;
@@ -47,67 +69,75 @@ export class DialogManger {
     if (typeof scriptStep === 'string') {
       rsp = request.buildRsp();
       rsp.msg = scriptStep;
-
     } else if (scriptStep instanceof SberResponse) {
       rsp = scriptStep;
-
     } else if ({}.toString.call(scriptStep) === '[object Generator]') {
       session.script = scriptStep;
-      rsp = this.process(request);
+      rsp = await this.process(request);
     } else if ({}.toString.call(scriptStep) === '[object GeneratorFunction]') {
       session.script = scriptStep(session.request);
-      rsp = this.process(request);
+      rsp = await this.process(request);
     } else {
-      DateLog(chalk.redBright('You have passed unsupported type from script generator'));
+      dateLog(chalk.redBright('You have returned unsupported type from your generator'));
     }
 
     if (rsp.end) {
       delete this.sessions[request.userId];
     }
-    console.log(rsp.body)
     return rsp;
   }
 
-  deleteSessions() {
-    const len = Object.keys(this.sessions).length;
-    DateLog(chalk.magentaBright(`Total sessions: ${len}`));
-    DateLog(chalk.magentaBright('Deleting unused sessions'));
-    let counter = 0;
+  newHook(event: Event, callback: Callback) {
+    this.hooks[event].push(callback);
+  }
 
+  async deleteSessions() {
+    const len = Object.keys(this.sessions).length;
+    dateLog(chalk.magentaBright(`Total sessions: ${len}`));
+    dateLog(chalk.magentaBright('Deleting unused sessions'));
+
+    let counter = 0;
     for (const [key, value] of Object.entries(this.sessions)) {
       const s = (value as Session).lastActive;
       if (Date.now() - s > this.deleteSessionAfter) {
+        for (const hook of this.hooks[Event.CreateSession]) {
+          await hook(this.sessions[key]);
+        }
         delete this.sessions[key];
         counter++;
       }
     }
-    DateLog(chalk.magentaBright(`Deleted ${counter} sessions`));
+    dateLog(chalk.magentaBright(`Deleted ${counter} sessions`));
   }
 }
 
 export class Session {
   start: any;
   script: Generator<SberRequest, string | SberResponse | Function>;
+  ctx: any;
+  userId: string;
   // scriptStorage: {string: Function | Generator}
-  request: SberRequest;  // The link for updating object
+  request: SberRequest; // The link for updating object
   lastActive: number;
 
   constructor(start: any, request: SberRequest) {
     this.start = start;
     this.request = request;
     this.script = start(request);
+    this.ctx = {};
+    this.userId = request.userId;
     // this.scriptStorage = {'/': start};
     this.lastActive = Date.now();
   }
 
-  step(): any {
+  step(): ScriptStep {
     this.lastActive = Date.now();
     const { value, done } = this.script.next();
     if (done) {
-      DateLog(chalk.bgYellow('Script ended. Reloading'));
-      this.script = this.start(this.request);
+      dateLog(chalk.bgYellow('Script ended. Reloading'));
+      this.script = this.start(this.request, this.ctx);
       return this.step();
     }
-    return value;
+    return value as ScriptStep;
   }
 }
