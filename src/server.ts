@@ -8,15 +8,14 @@ export class Dialute {
   port: string;
 
   constructor({
-    entrypoint,
     dm,
     port = '8000',
   }: {
-    entrypoint: GeneratorFunction;
     dm: DialogManger;
     port: string;
   }) {
-    this.dm = new DialogManger(entrypoint);
+
+    this.dm = dm;
     this.app = express();
     this.port = port;
 
@@ -29,6 +28,12 @@ export class Dialute {
       const body = this.dm.process(request.body).body;
       response.send(body);
     });
+  }
+
+  static fromEntrypoint(entrypoint: GeneratorFunction): Dialute {
+    let dm = new DialogManger(entrypoint);
+    let port = '8000';
+    return new Dialute({dm, port});
   }
 
   start() {

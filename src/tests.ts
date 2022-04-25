@@ -26,5 +26,5 @@ function* b(r: SberRequest, num: number): ScriptStep {
   yield script(r)
 }
 
-const d = new Dialute(script as GeneratorFunction)
+const d = Dialute.fromEntrypoint(script as GeneratorFunction)
 d.start()
