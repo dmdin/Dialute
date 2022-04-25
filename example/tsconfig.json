@@ -9,8 +9,7 @@
     "sourceMap": true,
     "inlineSources": true,
     "outDir": "dist",
-    "baseUrl": ".",
-    "declaration": true
+    "baseUrl": "."
   },
   "include": [
     "src/**/*"
