@@ -1,85 +1,30 @@
-// import chalk from 'chalk';
-// import express = require("express");
-// import { DateLog, DialogManger } from "./dialog";
-// import { SberRequest, SberResponse } from './api';
-//
-// function* script(r: SberRequest) {
-//   const rsp = r.buildRsp();
-//   while (true) {
-//     rsp.msg = r.msg;
-//     rsp.kbrd = ['1', '2', '3'];
-//     // yield r.nlu.lemmaIntersection(['привет', 'салют', 'дело']).toString();
-//     yield rsp;
-//   }
-// }
-//
-// const dm = new DialogManger(script);
-// const app = express();
-// const port = 8000;
-//
-// app.use((req, res, next) => {
-//   DateLog(`${chalk.green(req.method)}: ${chalk.cyan(req.path)}`);
-//   next();
-// });
-// app.use(express.json());
-// app.post('/app-connector/', (request, response) => {
-//   const body = dm.process(request.body);
-//   response.send(body);
-// });
-//
-// app.listen(port, () => DateLog(chalk.blue(`Start server on http://localhost:${port}/`)));
+import {ScriptStep, DialogManger} from "./dialog";
+import {Dialute} from "./server";
+import { SberRequest, SberResponse } from './api';
 
-function* s(): any {
-  yield 'Hello';
-  yield 'World';
-  yield a
-  yield b
-  yield b()
-
+function* script(r: SberRequest): ScriptStep {
+  const rsp = r.buildRsp();
+  while (true) {
+    rsp.msg = r.msg;
+    rsp.kbrd = ['1', '2', '3'];
+    // yield r.nlu.lemmaIntersection(['привет', 'салют', 'дело']).toString();
+    yield rsp;
+    yield a(r)
+  }
 }
 
-function a() {
-  return 'qeqw'
+function* a(r: SberRequest): ScriptStep {
+  console.log('hey')
+  yield 'Hello from a'
+  yield 'Hello from a 2'
+  yield b(r, 1)
 }
 
-function* b() {
-  yield '1'
-  yield '2'
-  yield s()
+function* b(r: SberRequest, num: number): ScriptStep {
+  yield `Hello from b, num is ${num}`
+  yield 'Hello from b 2'
+  yield script(r)
 }
 
-let f = s();
-
-console.log(s.name);
-let r;
-
-r = f.next()
-console.log(r)
-r = f.next()
-console.log(r)
-r = f.next()
-
-console.log(r)
-r = f.next()
-console.log(r)
-r = f.next()
-console.log(r)
-
-f = r.value as Generator;
-r = f.next()
-console.log(r)
-r = f.next()
-console.log(r)
-r = f.next()
-console.log(r)
-
-f = r.value as Generator;
-r = f.next()
-console.log(r)
-
-console.log('----------------------------')
-console.log({}.toString.call(s))
-console.log({}.toString.call(f))
-console.log({}.toString.call(f) === '[object Generator]')
-console.log({}.toString.call(f) === '[object GeneratorFunction]')
-
+const d = new Dialute(script as GeneratorFunction)
+d.start()
