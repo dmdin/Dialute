@@ -76,7 +76,7 @@ export class DialogManger {
       session.script = scriptStep;
       rsp = await this.process(request);
     } else if ({}.toString.call(scriptStep) === '[object GeneratorFunction]') {
-      session.script = scriptStep(session.request);
+      session.script = scriptStep(session.request, session.ctx);
       rsp = await this.process(request);
     } else {
       dateLog(chalk.redBright('You have returned unsupported type from your generator'));
@@ -116,7 +116,6 @@ export class Session {
   start: any;
   script: Generator<SberRequest, string | SberResponse | Function>;
   ctx: any;
-  userId: string;
   // scriptStorage: {string: Function | Generator}
   request: SberRequest; // The link for updating object
   lastActive: number;
@@ -124,9 +123,8 @@ export class Session {
   constructor(start: any, request: SberRequest) {
     this.start = start;
     this.request = request;
-    this.script = start(request);
     this.ctx = {};
-    this.userId = request.userId;
+    this.script = start(request, this.ctx);
     // this.scriptStorage = {'/': start};
     this.lastActive = Date.now();
   }
