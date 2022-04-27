@@ -29,6 +29,11 @@ export class Dialute {
     return new Dialute({ dm, port });
   }
 
+  shareApp(path: string) {
+    this.app.use(express.static(path))
+    return this
+  }
+
   start() {
     this.app.listen(this.port, () => dateLog(chalk.blue(`Start server on http://localhost:${this.port}/`)));
   }
