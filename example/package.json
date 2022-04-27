@@ -4,18 +4,17 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "dev": "ts-nodemon --no-notify --entry  src/index.ts",
+    "dev": "nodemon --exec npx ts-node src/index.ts",
     "lint": "eslint .",
     "format": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
-    "@trongnd/ts-nodemon": "^1.0.3",
     "@types/node": "^15.14.9",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.21.0",
     "eslint": "^8.14.0",
     "prettier": "^2.6.2",
-    "ts-node": "^10.7.0",
+    "nodemon": "^2.0.15",
     "tslib": "^2.4.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.6.3"
