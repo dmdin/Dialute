@@ -17,7 +17,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "dev": "ts-nodemon --no-notify --entry dist/tests.js",
-    "publish": "pnpm run build && pnpm version patch "
+    "patch": "pnpm version patch"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
