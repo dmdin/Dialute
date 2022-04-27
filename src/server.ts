@@ -1,3 +1,4 @@
+// @ts-ignore
 import express = require('express');
 import { dateLog, DialogManger } from './dialog';
 import chalk from 'chalk';
