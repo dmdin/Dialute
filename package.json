@@ -15,23 +15,26 @@
   "scripts": {
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json",
+    "lint": "eslint .",
     "dev": "ts-nodemon --no-notify --entry dist/tests.js",
     "patch": "pnpm version patch"
   },
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.0",
     "chalk": "^2.4.2",
-    "express": "^4.17.1"
+    "express": "^4.18.0"
   },
   "devDependencies": {
     "@trongnd/ts-nodemon": "^1.0.3",
-    "@types/express": "^4.17.12",
-    "@types/node": "^15.12.1",
-    "prettier": "^2.3.1",
+    "@types/express": "^4.17.13",
+    "@types/node": "^15.14.9",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.6.2",
     "ts-node": "^10.7.0",
-    "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.6.3"
   }
 }

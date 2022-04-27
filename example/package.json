@@ -1,14 +1,26 @@
 {
-  "name": "dialute_example",
+  "name": "Dialute example",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "dev": "ts-nodemon --no-notify --entry dist/index.js"
-  },
-  "main": "src/index.ts",
-  "dependencies": {
-    "dialute": "^0.0.23"
+    "build": "tsc",
+    "dev": "ts-nodemon --no-notify --entry  src/index.ts",
+    "lint": "eslint .",
+    "format": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
     "@trongnd/ts-nodemon": "^1.0.3",
-    "typescript": ">=2.7.0"
+    "@types/node": "^15.14.9",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "eslint": "^8.14.0",
+    "prettier": "^2.6.2",
+    "ts-node": "^10.7.0",
+    "tslib": "^2.4.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "dialute": "^0.0.24"
   }
 }

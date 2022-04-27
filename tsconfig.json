@@ -1,18 +1,19 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "esModuleInterop": true,
     "target": "es6",
-    "noImplicitAny": true,
-    "incremental": true,
+    "module": "commonjs",
     "moduleResolution": "node",
-    "sourceMap": true,
-    "inlineSources": true,
     "outDir": "dist",
     "baseUrl": ".",
-    "declaration": true
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "incremental": true,
+    "sourceMap": true,
+    "inlineSources": true
   },
   "include": [
     "src/**/*"
   ]
 }
+
