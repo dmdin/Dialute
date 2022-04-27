@@ -31,11 +31,13 @@ export class Dialute {
   }
 
   shareApp(path: string) {
-    this.app.use(express.static(path))
-    return this
+    this.app.use(express.static(path));
+    return this;
   }
 
   start() {
-    this.app.listen(this.port, () => dateLog(chalk.blue(`Start server on http://localhost:${this.port}/`)));
+    this.app.listen(this.port, () =>
+      dateLog(chalk.blue(`Start server on http://localhost:${this.port}/`))
+    );
   }
 }

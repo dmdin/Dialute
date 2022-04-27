@@ -21,14 +21,16 @@ function* a(r: SberRequest): ScriptStep {
 }
 
 function* b(r: SberRequest, ctx: any): ScriptStep {
-  const {num} = ctx;
+  const { num } = ctx;
   yield `Hello from b, num is ${num}`;
   yield 'Hello from b 2';
   yield script(r, ctx);
 }
 
 const dm = new DialogManger(script as GeneratorFunction);
-dm.newHook(Event.CreateSession, async (s) => console.log('New session!', s.request.userId));
+dm.newHook(Event.CreateSession, async s =>
+  console.log('New session!', s.request.userId)
+);
 const d = new Dialute({ dm, port: '8000' });
 
 // const d = Dialute.fromEntrypoint(script as GeneratorFunction)

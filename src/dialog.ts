@@ -34,7 +34,7 @@ export class DialogManger {
     optional = {
       deleteSessionAfter: Minute * 4,
       deleteEachTime: Minute * 2,
-    },
+    }
   ) {
     this.start = start;
     this.sessions = {};
@@ -79,7 +79,11 @@ export class DialogManger {
       session.script = scriptStep(session.request, session.ctx);
       rsp = await this.process(request);
     } else {
-      dateLog(chalk.redBright('You have returned unsupported type from your generator'));
+      dateLog(
+        chalk.redBright(
+          'You have returned unsupported type from your generator'
+        )
+      );
     }
 
     if (rsp.end) {

@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.ts\"",
+    "format": "prettier --write ./src/**/*.{js,json,html,ts}",
     "lint": "eslint .",
     "dev": "nodemon --exec npx ts-node src/tests.ts",
     "patch": "pnpm version patch --no-git-tag-version"
