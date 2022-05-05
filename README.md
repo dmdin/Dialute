@@ -6,55 +6,66 @@ on [SmartApp API](https://developer.sberdevices.ru/docs/ru/developer_tools/amp/s
 
 ## ⚙️ Install
 
+The framework is published in __[NPM](https://www.npmjs.com/package/dialute)__, thus you can simply install it into your existing
 ```bash
 $: npm install dialute
 ```
 
-## 🚀 Startup
+The preferred way to initialize the project is to clone needed [template](https://github.com/Dikower/dialute-starter-svelte) and immediately start development.
 
-* Initiate the ordinary *express* project
-* Write a generator with the single argument: __request__
-    ```js
-    // you can use any names you want
-    function* script(r /*this is a link*/) { 
-      // each time after yield the request object will be updated
+```bash
+$: git clone https://github.com/Dikower/dialute-starter-svelte
+# or simply
+$: npx degit dikower/dialute-starter-svelte
+```
+
+## 🚀 Startup
+__Dialute__ uses [__Express__](https://expressjs.com/) behind to handle requests from [__SmartMarket__](https://developers.sber.ru/).
+Thanks to the framework, you can skip all boring and routine stuff about parsing request bodies and managing sessions of users and focus
+on logic and dialog creation using [__JavaScript Generators__](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator).
+
+## 💎 Concept
+The generator represents a dialog. When a user sends a message it triggers the update of _SberRequest_ object, that is passed to the generator as reference.
+That's why you can easily read the updated message from the same variable. On the other hand, yield will return the content, you pass to user, and then will wait until next message 
+to continue executing script. The generator saves context inside, so it helps us to construct state dependent dialog using just plain JavaScript or TypeScript
+
+* Import the framework starter and _SberRequest_ for type annotation
+  ```ts
+  import { Dialute, SberRequest } from 'dialute';
+  ```
+* Write a generator, that describes the dialog. It must have one required argument: _SberRequest_ and one optional argument _Context_, you can  
+  ```ts
+    // You can use any name for generator you want
+    // r: this is a ref for SberRequest, it will be updated after each user message
+    // ctx: Optional argument for advanced techniques, you can skip it for now
+    // function* script(r: SberRequest, ctx: any) {
+    function* script(r: SberRequest) { // Also possible
       while (true) {
-        // send the message to user
+        // send the message to user 
         yield 'Hello world from Dialute!';
+        // yield r.msg  // This will make echo-bot, that repeats user input
       }
     }
     ```
-* Import the framework and create the __DialogManager__, pass the generator to it
-    ```js
-    const {DialogManger} = require("dialute");
-    const dm = new DialogManger(script);
+* Set the entrypoint of dialog and start the server
+    ```ts
+    // Creates ready to start server from generator
+    const d = Dialute.fromEntrypoint(script as GeneratorFunction);
+    // Starts listening for requests from SmartMarket
+    d.start();
     ```
-* Use *json* parser middleware
-    ```js
-    const express = require("express");
-    const app = express();
-    app.use(express.json());
-    ```
-* Add handler for a POST method on *"/app-connector/"* and use __DialogManager__ to process the request body
-    ```js
-    app.post('/app-connector/', (request, response) => {
-      const body = dm.process(request.body);
-      response.send(body);
-    });
-    ```
-* Start the server
-    ```js
-    app.listen(8000, () => console.log(`Started server on http://localhost:8000/`));
-    ```
-* Use *nodemon* in *package.json* scripts to enable hot reload
+  
+* Use [*nodemon*](https://www.npmjs.com/package/nodemon) in *package.json* scripts to enable hot reload
     ```json
-    "dev": "nodemon index.js",
+    "scripts": {
+      "dev": "nodemon --exec npx ts-node src/index.ts",
+    }
     ```
 * Run *ngrok* tunnel on __port 8000__. Paste https link into Webhook field in __SmartApp__ settings.
     ```bash
     $: ngrok http 8000
     ```
-
+* The whole code can be found inside [example](https://github.com/Dikower/Dialute/tree/master/example) directory
 ## 📋 Docs
 
 Coming soon...
