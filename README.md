@@ -7,13 +7,13 @@ on [SmartApp API](https://developer.sberdevices.ru/docs/ru/developer_tools/amp/s
 ## ⚙️ Install
 
 The framework is published in __[NPM](https://www.npmjs.com/package/dialute)__, thus you can simply install it into your existing
-```bash
+```shell
 $: npm install dialute
 ```
 
 The preferred way to initialize the project is to clone needed [template](https://github.com/Dikower/dialute-starter-svelte) and immediately start development.
 
-```bash
+```shell
 $: git clone https://github.com/Dikower/dialute-starter-svelte
 # or simply
 $: npx degit dikower/dialute-starter-svelte
@@ -23,6 +23,16 @@ $: npx degit dikower/dialute-starter-svelte
 __Dialute__ uses [__Express__](https://expressjs.com/) behind to handle requests from [__SmartMarket__](https://developers.sber.ru/).
 Thanks to the framework, you can skip all boring and routine stuff about parsing request bodies and managing sessions of users and focus
 on logic and dialog creation using [__JavaScript Generators__](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator).
+If you are using [_example_](https://github.com/Dikower/Dialute/tree/master/example) or [_template_](https://github.com/Dikower/dialute-starter-svelte) and familiar with [__ngrok__](https://ngrok.com/), just run
+```shell
+# Shell №1
+$: npm run dev
+
+#-------------
+# Shell №2
+$: ngrok http 8000
+
+```
 
 ## 💎 Concept
 The generator represents a dialog. When a user sends a message it triggers the update of _SberRequest_ object, that is passed to the generator as reference.
@@ -62,10 +72,10 @@ to continue executing script. The generator saves context inside, so it helps us
     }
     ```
 * Run *ngrok* tunnel on __port 8000__. Paste https link into Webhook field in __SmartApp__ settings.
-    ```bash
+    ```shell
     $: ngrok http 8000
     ```
-* The whole code can be found inside [example](https://github.com/Dikower/Dialute/tree/master/example) directory
+* The whole code can be found inside [_example_](https://github.com/Dikower/Dialute/tree/master/example) directory
 ## 📋 Docs
 
 Coming soon...
