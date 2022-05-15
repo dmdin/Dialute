@@ -1,4 +1,4 @@
-import { ScriptStep, DialogManger, Event } from './dialog';
+import { ScriptStep, DialogManager, Event } from './dialog';
 import { Dialute } from './server';
 import { SberRequest, SberResponse } from './api';
 
@@ -27,7 +27,7 @@ function* b(r: SberRequest, ctx: any): ScriptStep {
   yield script(r, ctx);
 }
 
-const dm = new DialogManger(script as GeneratorFunction);
+const dm = new DialogManager(script as GeneratorFunction);
 dm.newHook(Event.CreateSession, async s =>
   console.log('New session!', s.request.userId)
 );

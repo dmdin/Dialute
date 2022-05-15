@@ -22,7 +22,7 @@ interface Hooks {
   [event: string]: string;
 }
 
-export class DialogManger {
+export class DialogManager {
   start: any;
   sessions: any;
   hooks: { [event in Event]: Callback[] };

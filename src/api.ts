@@ -1,32 +1,51 @@
 /* tslint:disable:max-classes-per-file */
+import type {
+  ServerAction,
+  MessageType,
+  Payload,
+  FullRequest,
+  MESSAGE_TO_SKILL, Message, SERVER_ACTION, Character, Device
+} from "./intefaces";
+
 export class SberRequest {
-  body: any;
+  body: FullRequest;
   nlu: NLU;
 
   constructor(request: any) {
     this.body = request;
     if (this.type === 'MESSAGE_TO_SKILL') {
-      this.nlu = new NLU(this.pld.message.tokenized_elements_list);
+      this.nlu = new NLU(
+        (this.pld as MESSAGE_TO_SKILL).message.tokenized_elements_list
+      );
     }
   }
 
-  get type() {
+  get type(): MessageType {
     return this.body.messageName;
   }
 
-  get pld() {
+  get pld(): Payload {
     return this.body.payload;
   }
 
-  get msg(): string {
-    return this.pld.message.original_text;
+  get msg(): string | undefined {
+    if (this.type === 'MESSAGE_TO_SKILL' || this.type === 'CLOSE_APP') {
+      return (this.pld as MESSAGE_TO_SKILL).message.original_text;
+    }
+  }
+  get msgFull(): Message | undefined {
+    if (this.type === 'MESSAGE_TO_SKILL' || this.type === 'CLOSE_APP') {
+      return (this.pld as MESSAGE_TO_SKILL).message;
+    }
   }
 
-  get act(): object {
-    return this.pld.server_action;
+  get act(): ServerAction | undefined {
+    if (this.type === 'SERVER_ACTION') {
+      return (this.pld as SERVER_ACTION).server_action;
+    }
   }
 
-  get character(): object {
+  get char(): Character {
     return this.pld.character;
   }
 
@@ -38,7 +57,7 @@ export class SberRequest {
     return this.pld.character.name;
   }
 
-  get device(): object {
+  get device(): Device {
     return this.pld.device;
   }
 
@@ -47,12 +66,12 @@ export class SberRequest {
     return this.body.uuid.sub;
   }
 
-  clone(another: SberRequest): any {
+  clone(another: SberRequest) {
     this.body = another.body;
     this.nlu = another.nlu;
   }
 
-  buildRsp() {
+  buildRsp(): SberResponse {
     return new SberResponse(this);
   }
 }

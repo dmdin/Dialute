@@ -1,14 +1,14 @@
 // @ts-ignore
 import express = require('express');
-import { dateLog, DialogManger } from './dialog';
+import { dateLog, DialogManager } from './dialog';
 import chalk from 'chalk';
 
 export class Dialute {
-  dm: DialogManger;
+  dm: DialogManager;
   app: express.Express;
   port: string;
 
-  constructor({ dm, port = '8000' }: { dm: DialogManger; port: string }) {
+  constructor({ dm, port = '8000' }: { dm: DialogManager; port: string }) {
     this.dm = dm;
     this.app = express();
     this.port = port;
@@ -25,7 +25,7 @@ export class Dialute {
   }
 
   static fromEntrypoint(entrypoint: GeneratorFunction): Dialute {
-    const dm = new DialogManger(entrypoint);
+    const dm = new DialogManager(entrypoint);
     const port = '8000';
     return new Dialute({ dm, port });
   }
