@@ -4,8 +4,12 @@ import type {
   MessageType,
   Payload,
   FullRequest,
-  MESSAGE_TO_SKILL, Message, SERVER_ACTION, Character, Device
-} from "./intefaces";
+  MESSAGE_TO_SKILL,
+  Message,
+  SERVER_ACTION,
+  Character,
+  Device,
+} from './intefaces';
 
 export class SberRequest {
   body: FullRequest;
@@ -33,6 +37,7 @@ export class SberRequest {
       return (this.pld as MESSAGE_TO_SKILL).message.original_text;
     }
   }
+
   get msgFull(): Message | undefined {
     if (this.type === 'MESSAGE_TO_SKILL' || this.type === 'CLOSE_APP') {
       return (this.pld as MESSAGE_TO_SKILL).message;
