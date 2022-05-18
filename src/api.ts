@@ -68,7 +68,8 @@ export class SberRequest {
 
   get userId(): string {
     // return this.body.sessionId; Always changes on SberPortal for each message!
-    return this.body.uuid.sub;
+    return this.body.uuid.userId;
+    // return this.body.uuid.sub;
   }
 
   clone(another: SberRequest) {
