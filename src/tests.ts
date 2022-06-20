@@ -1,8 +1,16 @@
 import { ScriptStep, DialogManager, Event } from './dialog';
 import { Dialute } from './server';
 import { SberRequest, SberResponse } from './api';
+import { Mongo } from './db';
+
+// const db = new Mongo({
+//   uri: `test`,
+//   dbName: 'test',
+//   collectionName: 'test',
+// });
 
 function* script(r: SberRequest, ctx: any): ScriptStep {
+  console.log(ctx)
   const rsp = r.buildRsp();
   while (true) {
     rsp.msg = r.msg;
@@ -27,10 +35,12 @@ function* b(r: SberRequest, ctx: any): ScriptStep {
   yield script(r, ctx);
 }
 
-const dm = new DialogManager(script as GeneratorFunction);
-dm.newHook(Event.CreateSession, async s =>
-  console.log('New session!', s.request.userId)
-);
+const dm = new DialogManager(script as GeneratorFunction)
+  // .setCtxDb(db)
+  .newHook(Event.CreateSession, async s =>
+    console.log('New session!', s.request.userId)
+  );
+
 const d = new Dialute({ dm, port: '8000' });
 
 // const d = Dialute.fromEntrypoint(script as GeneratorFunction)

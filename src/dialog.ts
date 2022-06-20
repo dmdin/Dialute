@@ -1,5 +1,6 @@
 /* tslint:disable:max-classes-per-file */
 import chalk from 'chalk';
+import type { Db } from './db/types';
 import { SberRequest, SberResponse } from './api';
 
 const Second = 1000;
@@ -28,6 +29,7 @@ export class DialogManager {
   hooks: { [event in Event]: Callback[] };
   deleteSessionAfter: number;
   deleteEachTime: number;
+  static ctxDb: Db;
 
   constructor(
     start: GeneratorFunction,
@@ -49,13 +51,29 @@ export class DialogManager {
     setInterval(() => this.deleteSessions(), this.deleteEachTime);
   }
 
+  setCtxDb(db: Db) {
+    DialogManager.ctxDb = db;
+    return this;
+  }
+
+  async createCtx(userId: string): Promise<any> {
+    let ctx = {};
+    if (DialogManager.ctxDb) {
+      ctx = await DialogManager.ctxDb.getById(userId) || {};
+    }
+    // @ts-ignore
+    ctx['_id'] = userId;
+    return ctx;
+  }
+
   async process(request: any): Promise<SberResponse> {
     if (!(request instanceof SberRequest)) {
       request = new SberRequest(request);
     }
 
     if (!this.sessions.hasOwnProperty(request.userId)) {
-      const newSession = new Session(this.start, request);
+      const ctx = await this.createCtx(request.userId);
+      const newSession = new Session(this.start, request, ctx);
       for (const hook of this.hooks[Event.CreateSession]) {
         await hook(newSession);
       }
@@ -94,6 +112,11 @@ export class DialogManager {
 
   newHook(event: Event, callback: Callback) {
     this.hooks[event].push(callback);
+    return this;
+  }
+
+  newInterceptor() {
+
   }
 
   async deleteSessions() {
@@ -116,20 +139,30 @@ export class DialogManager {
   }
 }
 
+
+const ctxHandler = {
+  get(target: any, key: any, receiver: any) {
+    return Reflect.get(target, key, receiver);
+  },
+  set(target: any, key: any, val: any, receiver: any) {
+    const newVal = Reflect.set(target, key, val, receiver);
+    DialogManager.ctxDb.setById(target._id, receiver);
+    return newVal
+  }
+}
+
 export class Session {
   start: any;
   script: Generator<SberRequest, string | SberResponse | Function>;
   ctx: any;
-  // scriptStorage: {string: Function | Generator}
   request: SberRequest; // The link for updating object
   lastActive: number;
 
-  constructor(start: any, request: SberRequest) {
+  constructor(start: any, request: SberRequest, ctx: Object) {
     this.start = start;
     this.request = request;
-    this.ctx = {};
+    this.ctx = new Proxy(ctx, ctxHandler);
     this.script = start(request, this.ctx);
-    // this.scriptStorage = {'/': start};
     this.lastActive = Date.now();
   }
 
