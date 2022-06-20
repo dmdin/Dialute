@@ -1,6 +1,6 @@
 {
   "name": "dialute",
-  "version": "0.0.29",
+  "version": "0.0.32",
   "author": "Din Dmitriy <@Dikower>",
   "description": "A highly declarative framework for building SberSalute apps",
   "repository": {
@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "dev": "nodemon --exec npx ts-node src/tests.ts",
     "patch": "npm version patch --no-git-tag-version",
-    "publish": "npm publish--no-git-checks"
+    "publish": "npm publish --no-git-checks"
   },
   "dependencies": {
     "body-parser": "^1.20.0",
