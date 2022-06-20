@@ -1,5 +1,6 @@
 // @ts-ignore
 import express = require('express');
+import type {Db} from "./db/types";
 import { dateLog, DialogManager } from './dialog';
 import chalk from 'chalk';
 
@@ -33,6 +34,11 @@ export class Dialute {
   shareApp(path: string) {
     this.app.use(express.static(path));
     return this;
+  }
+
+  useDb(db: Db) {
+    this.dm.setCtxDb(db);
+    return this
   }
 
   start() {
