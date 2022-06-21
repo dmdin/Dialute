@@ -207,4 +207,8 @@ class NLU {
     }
     return counter;
   }
+
+  lIn(lemmas: string[]) {
+    return this.lemmaIntersection(lemmas);
+  }
 }
