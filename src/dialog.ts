@@ -146,7 +146,9 @@ const ctxHandler = {
   },
   set(target: any, key: any, val: any, receiver: any) {
     const newVal = Reflect.set(target, key, val, receiver);
-    DialogManager.ctxDb.setById(target._id, receiver);
+    if (DialogManager.ctxDb) {
+      DialogManager.ctxDb.setById(target._id, receiver);
+    }
     return newVal
   }
 }

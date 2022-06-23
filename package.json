@@ -1,6 +1,6 @@
 {
   "name": "dialute",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "author": "Din Dmitriy <@Dikower>",
   "description": "A highly declarative framework for building SberSalute apps",
   "repository": {

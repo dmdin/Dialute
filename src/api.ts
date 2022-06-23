@@ -160,6 +160,13 @@ export class SberResponse {
   set listen(value: boolean) {
     this.pld.auto_listening = value;
   }
+
+  estimate(): SberResponse {
+    let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+    clone.body.messageName = 'CALL_RATING';
+    clone.pld = {};
+    return clone;
+  }
 }
 
 class Token {

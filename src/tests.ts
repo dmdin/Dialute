@@ -18,6 +18,9 @@ function* script(r: SberRequest, ctx: any): ScriptStep {
     // yield r.nlu.lemmaIntersection(['привет', 'салют', 'дело']).toString();
     yield rsp;
     ctx.num = 2;
+
+    yield rsp.estimate();
+
     yield a;
   }
 }
