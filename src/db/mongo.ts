@@ -1,13 +1,12 @@
-import "reflect-metadata";
-import type {Db} from './types';
-import { Collection, MongoClient, ServerApiVersion } from "mongodb";
+import 'reflect-metadata';
+import type { Db } from './types';
+import { Collection, MongoClient, ServerApiVersion } from 'mongodb';
 
 export interface MongoInit {
-  uri: string
+  uri: string;
   dbName: string;
   collectionName: string;
 }
-
 
 // const getCollection = (target: Object, propertyKey: string, descriptor: PropertyDescriptor) =>  {
 //   console.log('decorator:', target)
@@ -32,11 +31,11 @@ export interface MongoInit {
 // }
 
 export class Mongo implements MongoInit, Db {
-  uri: string
+  uri: string;
   dbName: string;
   collectionName: string;
-  
-  client: MongoClient
+
+  client: MongoClient;
 
   constructor(params: MongoInit) {
     Object.assign(this, params);
@@ -45,33 +44,44 @@ export class Mongo implements MongoInit, Db {
     this.client = new MongoClient(this.uri, {
       // useNewUrlParser: true,
       // useUnifiedTopology: true,
-      serverApi: ServerApiVersion.v1
+      serverApi: ServerApiVersion.v1,
     });
   }
 
   async getCollection(): Promise<Collection> {
-    const {client, dbName, collectionName} = this;
-    await client.connect()
+    const { client, dbName, collectionName } = this;
+    await client.connect();
     return this.client.db(dbName).collection(collectionName);
   }
 
   async closeClient() {
-    const {client} = this;
+    const { client } = this;
     await client.close();
   }
 
   async getById(id: string): Promise<any> {
-    const collection = await this.getCollection();
-    let res = await collection.findOne({ _id: id });
-    await this.closeClient();
+    let res = {};
+
+    try {
+      const collection = await this.getCollection();
+      res = await collection.findOne({ _id: id });
+      await this.closeClient();
+    } catch (e) {
+      console.log('Error happened during DB request:', e);
+    }
+
     return res;
   }
 
   async setById(id: string, data: any): Promise<any> {
-    const collection = await this.getCollection();
+    try {
+      const collection = await this.getCollection();
+      await collection.updateOne({ _id: id }, { $set: data }, { upsert: true });
+      return true;
 
-    await collection.updateOne({ _id: id }, { $set: data }, { upsert: true });
+    } catch (e) {
+      console.log('Error happened during DB request:', e);
+    }
     return true;
   }
-
 }

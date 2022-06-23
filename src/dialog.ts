@@ -59,11 +59,7 @@ export class DialogManager {
   async createCtx(userId: string): Promise<any> {
     let ctx = {};
     if (DialogManager.ctxDb) {
-      try {
-        ctx = await DialogManager.ctxDb.getById(userId) || {};
-      } catch (e) {
-        console.log('Error happened during DB request:', e)
-      }
+      ctx = await DialogManager.ctxDb.getById(userId) || {};
     }
     // @ts-ignore
     ctx['_id'] = userId;
